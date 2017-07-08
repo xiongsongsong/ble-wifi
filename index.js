@@ -2,14 +2,12 @@ var bleno = require('bleno');
 var ab = require('./ArrayBufferHelper')
 const primaryService = 'CDFE'
 process.env.BLENO_ADVERTISING_INTERVAL=10
-process.env.BLENO_ADVERTISING_INTERVAL=10
 process.env.BLENO_DEVICE_NAME='rstv_01'
 
 var BlenoPrimaryService = bleno.PrimaryService;
 var Characteristic = bleno.Characteristic;
-var EchoCharacteristic = require('./characteristic');
 
-console.log('bleno - echo');
+console.log('ble-wifi');
 
 bleno.on('stateChange', function(state) {
   console.log('on -> stateChange: ' + state);
@@ -29,7 +27,6 @@ bleno.on('advertisingStart', function(error) {
       new BlenoPrimaryService({
         uuid: primaryService,
         characteristics: [
-          new EchoCharacteristic(),
           new Characteristic({
                uuid:'000f',
                properties: ['read'],
