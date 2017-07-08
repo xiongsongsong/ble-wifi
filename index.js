@@ -20,7 +20,9 @@ bleno.on('stateChange', function(state) {
 });
 
 bleno.on('advertisingStart', function(error) {
-  console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
+console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
+
+var val = new Buffer(0)
 
   if (!error) {
     bleno.setServices([
@@ -29,13 +31,16 @@ bleno.on('advertisingStart', function(error) {
         characteristics: [
           new Characteristic({
                uuid:'000f',
-               properties: ['read'],
+               properties: ['read','write'],
                value: null,
                onReadRequest :(offset, callback)=>{
-                  callback(Characteristic.RESULT_SUCCESS, new Buffer(Date.now().toString())) 
+                  callback(Characteristic.RESULT_SUCCESS, val) 
+               },
+               onWriteRequest: (data, offset , withoutResponse, callback)=>{
+                 val = data 
+                 callback(Characteristic.RESULT_CALLBACK)
                }
          })
-                      
         ]
       })
     ]);
