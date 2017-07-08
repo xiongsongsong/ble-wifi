@@ -23,6 +23,8 @@ bleno.on('advertisingStart', function(error) {
 console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
 
 var val = new Buffer(0)
+// 能访问网站1，否则为0
+var internetConnect = new Buffer('0') 
 
   if (!error) {
     bleno.setServices([
@@ -30,6 +32,7 @@ var val = new Buffer(0)
         uuid: primaryService,
         characteristics: [
           new Characteristic({
+               // 000f接收wifi配置信息 
                uuid:'000f',
                properties: ['read','write'],
                value: null,
@@ -38,7 +41,17 @@ var val = new Buffer(0)
                },
                onWriteRequest: (data, offset , withoutResponse, callback)=>{
                  val = data 
+                 console.log('write', val.toString())
                  callback(Characteristic.RESULT_CALLBACK)
+               }
+         }),
+         new Characteristic({
+               // 000e 当前是否联网，已经联网(Wifi已启用并且可以访问互联网)返回1，否则返回0
+               uuid:'000e',
+               properties: ['read'],
+               value: null,
+               onReadRequest :(offset, callback)=>{
+                  callback(Characteristic.RESULT_SUCCESS, internetConnect) 
                }
          })
         ]
